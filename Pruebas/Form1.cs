@@ -45,6 +45,7 @@ namespace Pruebas
             textBoxPreparacion.Text = pasteleriaPruebasDataSet.Recetas.FindByID(1).Preparacion;
 
             DataRow[] recetas = pasteleriaPruebasDataSet.Tiene.Select("Receta_ID = 1");
+
             int idIngrediente = 1;
             foreach (var receta in recetas)
             {
@@ -52,6 +53,24 @@ namespace Pruebas
 
                 idIngrediente++;
             }
+
+            bloquearControles();
+        }
+
+        public void bloquearControles()
+        {
+            textBoxNombreReceta.BorderStyle = BorderStyle.None;
+            textBoxNombreReceta.BackColor = SystemColors.Control;
+            textBoxNombreReceta.ReadOnly = true;
+
+            comboBoxPaises.Visible = false;
+
+            label9.Visible = true;
+        }
+
+        public void desbloquarControles()
+        {
+
         }
 
         private void BtnActualizarReceta_Click(object sender, EventArgs e)
@@ -367,7 +386,75 @@ namespace Pruebas
 
             buttonEliminar.Click += new EventHandler(Eliminar_Ingrediente);
 
+            comboBoxIngredientes.SelectedValueChanged += new EventHandler(valorSeleccionadoCambiado);
+            comboBoxIngredientes.Leave += new EventHandler(dejarComboBoxIngrediente);
+
             Console.WriteLine("Numero de Unidades: "+comboBoxUnidades.Items.Count);
+        }
+
+        private void valorSeleccionadoCambiado(object sender, EventArgs e)
+        {
+            ComboBox ingrediente = (ComboBox)sender;
+            Console.WriteLine("Valor seleccionado nuevo: " + ingrediente.SelectedValue);
+
+            foreach (FlowLayoutPanel ingredienteLayout in flowLayoutPanel1.Controls)
+            {
+                ComboBox ingredienteExistente = (ComboBox)ingredienteLayout.Controls[0];
+                Button eliminarIngrediente = (Button)ingredienteLayout.Controls[3];
+
+                Console.WriteLine("Valor seleccionado existente: "+ingredienteExistente.SelectedValue);
+
+                if (ingrediente.Name != ingredienteExistente.Name)
+                {
+                    Console.WriteLine("Nombre del combobox de la nueva seleccion: "+ingrediente.Name);
+                    Console.WriteLine("Nombre del combobox ingrediente existente: " + ingredienteExistente.Name);
+
+                    Console.WriteLine("Los valores seleccionados son iguales?: " +( (int)ingrediente.SelectedValue == (int)ingredienteExistente.SelectedValue));
+
+                    if ((int)ingrediente.SelectedValue == (int)ingredienteExistente.SelectedValue)
+                    {
+                        if (MessageBox.Show("El ingrediente ya existe, seleccione otro", "Ingrediente duplicado", MessageBoxButtons.OK) == DialogResult.OK)
+                        {
+                            ingrediente.Focus();
+                        }
+                    }                    
+                }
+            }
+        }
+
+        private void dejarComboBoxIngrediente(object sender, EventArgs e)
+        {
+            ComboBox ingrediente = (ComboBox)sender;
+            Console.WriteLine("Valor seleccionado nuevo: " + ingrediente.SelectedValue);
+
+            foreach (FlowLayoutPanel ingredienteLayout in flowLayoutPanel1.Controls)
+            {
+                ComboBox ingredienteExistente = (ComboBox)ingredienteLayout.Controls[0];
+                Button eliminarIngrediente = (Button)ingredienteLayout.Controls[3];
+
+                
+                Console.WriteLine("Valor seleccionado existente: " + ingredienteExistente.SelectedValue);
+
+                if (ingrediente.Name != ingredienteExistente.Name)
+                {
+                    Console.WriteLine("Nombre del combobox de la nueva seleccion: " + ingrediente.Name);
+                    Console.WriteLine("Nombre del combobox ingrediente existente: " + ingredienteExistente.Name);
+
+                    Console.WriteLine("Los valores seleccionados son iguales?: " + ((int)ingrediente.SelectedValue == (int)ingredienteExistente.SelectedValue));
+
+                    if ((int)ingrediente.SelectedValue == (int)ingredienteExistente.SelectedValue)
+                    {
+                        if (MessageBox.Show("Elimine el ingrediente o seleccione otro\n\nDesea eliminar?", "Ingrediente duplicado", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                        {
+                            eliminarIngrediente.PerformClick();
+                        }
+                        else
+                        {
+                            ingrediente.Focus();
+                        }
+                    }
+                }
+            }
         }
 
         private void Eliminar_Ingrediente(object sender, EventArgs e)
@@ -382,25 +469,6 @@ namespace Pruebas
             Console.WriteLine(control.Name);
 
             flowLayoutPanel1.Controls.Remove(control);
-        }
-
-        public void ObtenerIngredientes()
-        {
-            SqlDataAdapter dataAdapterTiene = new SqlDataAdapter("SELECT * FROM Tiene WHERE RecetaID = 1", tieneTableAdapter.Connection);
-
-            DataTable Tiene = new DataTable();
-
-            dataAdapterTiene.Fill(Tiene);
-
-            foreach (DataRow recetaTiene in Tiene.Rows)
-            {
-
-            }
-
-            foreach (FlowLayoutPanel IngredienteControl in flowLayoutPanel1.Controls)
-            {
-                
-            }
         }
 
         private void BtnAgregarNuevoIngrediente_Click(object sender, EventArgs e)
@@ -440,14 +508,16 @@ namespace Pruebas
             }
         }
 
-        private void comboBoxUnidades_Leave(object sender, EventArgs e)
+        private void ComboBoxUnidadLeave(object sender, EventArgs e)
         {
-            dataAdapterUnidades = new SqlDataAdapter("SELECT * FROM Unidades", unidadesTableAdapter.Connection);
+            ComboBox comboBoxUnidades = (ComboBox)sender;
+
+            SqlDataAdapter dataAdapterUnidades = new SqlDataAdapter("SELECT * FROM Unidades", unidadesTableAdapter.Connection);
 
             //llena la tabla con la informacion y esquema de la tabla de la DB
             dataAdapterUnidades.Fill(unidadesTable);
 
-            Console.WriteLine("Combo Box Unidades Leave: " + unidadesTable.Rows.Count);
+            Console.WriteLine(unidadesTable.Rows.Count);
 
             bool valorExiste = false;
 
@@ -470,11 +540,11 @@ namespace Pruebas
                                      MessageBoxButtons.YesNo);
                 if (confirmarUpdate == DialogResult.Yes)
                 {
+                    comboBoxUnidades.Focus();
                     actualizarDBUnidades(comboBoxUnidades);
                 }
                 else
                 {
-                    unidadesTable.Clear();
                     comboBoxUnidades.Focus();
                 }
             }
@@ -482,55 +552,6 @@ namespace Pruebas
             {
                 unidadesTable.Clear();
             }
-
-            Console.WriteLine("Valor seleccionado Unidades Focus Leave: " + comboBoxUnidades.SelectedValue);
-            Console.WriteLine("Texto Seleccionado Unidades Focus Leave: " + comboBoxUnidades.SelectedText);
-        }
-
-        private void CmbBoxNuevaUnidad_Leave(object sender, EventArgs e)
-        {
-            SqlDataAdapter dataAdapterUnidades = new SqlDataAdapter("SELECT * FROM Unidades", unidadesTableAdapter.Connection);
-
-            //llena la tabla con la informacion y esquema de la tabla de la DB
-            dataAdapterUnidades.Fill(unidadesTable);
-
-            Console.WriteLine(unidadesTable.Rows.Count);
-
-            bool valorExiste = false;
-
-            for (int i = 0; i < unidadesTable.Rows.Count; i++)
-            {
-                DataRow unidadRow = unidadesTable.Rows[i];
-                Console.Write(unidadRow["ID"]);
-                Console.Write("   ");
-                Console.WriteLine(unidadRow["Nombre"]);
-                if (CmbBoxNuevaUnidad.Text == unidadRow["Nombre"].ToString())
-                {
-                    valorExiste = true;
-                }
-            }
-
-            if (!valorExiste)
-            {
-                var confirmarUpdate = MessageBox.Show("Deseas agregar: " + CmbBoxNuevaUnidad.Text + " a la lista de Unidades?",
-                                     "Agregar Item",
-                                     MessageBoxButtons.YesNo);
-                if (confirmarUpdate == DialogResult.Yes)
-                {
-                    actualizarDBUnidades(CmbBoxNuevaUnidad);
-                }
-                else
-                {
-                    CmbBoxNuevaUnidad.Focus();
-                }
-            }
-            else
-            {
-                unidadesTable.Clear();
-            }
-
-            Console.WriteLine("Valor seleccionado Unidades Focus Leave: " + CmbBoxNuevaUnidad.SelectedValue);
-            Console.WriteLine("Texto Seleccionado Unidades Focus Leave: " + CmbBoxNuevaUnidad.SelectedText);
         }
     }
 }

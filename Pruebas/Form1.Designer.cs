@@ -93,6 +93,10 @@
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ingredientesTableAdapter = new Pruebas.pasteleriaPruebasDataSetTableAdapters.IngredientesTableAdapter();
+            this.BtnEditarReceta = new System.Windows.Forms.Button();
+            this.BtnCancelar = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.origenBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pasteleriaPruebasDataSet)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.unidadesBindingSource)).BeginInit();
@@ -125,6 +129,7 @@
             this.comboBoxPaises.DataSource = this.origenBindingSource;
             this.comboBoxPaises.DisplayMember = "Nombre";
             this.comboBoxPaises.DropDownHeight = 80;
+            this.comboBoxPaises.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.comboBoxPaises.FormattingEnabled = true;
             this.comboBoxPaises.IntegralHeight = false;
             this.comboBoxPaises.ItemHeight = 13;
@@ -134,6 +139,7 @@
             this.comboBoxPaises.Size = new System.Drawing.Size(121, 21);
             this.comboBoxPaises.TabIndex = 3;
             this.comboBoxPaises.ValueMember = "ID";
+            this.comboBoxPaises.Visible = false;
             // 
             // origenBindingSource
             // 
@@ -207,7 +213,7 @@
             this.comboBoxUnidades.Size = new System.Drawing.Size(93, 21);
             this.comboBoxUnidades.TabIndex = 10;
             this.comboBoxUnidades.ValueMember = "ID";
-            this.comboBoxUnidades.Leave += new System.EventHandler(this.comboBoxUnidades_Leave);
+            this.comboBoxUnidades.Leave += new System.EventHandler(this.ComboBoxUnidadLeave);
             // 
             // unidadesBindingSource
             // 
@@ -421,7 +427,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(378, 430);
+            this.label6.Location = new System.Drawing.Point(139, 420);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(35, 13);
             this.label6.TabIndex = 13;
@@ -430,7 +436,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(378, 457);
+            this.label7.Location = new System.Drawing.Point(139, 447);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(35, 13);
             this.label7.TabIndex = 14;
@@ -439,7 +445,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(381, 489);
+            this.label8.Location = new System.Drawing.Point(142, 479);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(35, 13);
             this.label8.TabIndex = 15;
@@ -496,7 +502,7 @@
             this.CmbBoxNuevaUnidad.Size = new System.Drawing.Size(121, 21);
             this.CmbBoxNuevaUnidad.TabIndex = 19;
             this.CmbBoxNuevaUnidad.ValueMember = "ID";
-            this.CmbBoxNuevaUnidad.Leave += new System.EventHandler(this.CmbBoxNuevaUnidad_Leave);
+            this.CmbBoxNuevaUnidad.Leave += new System.EventHandler(this.ComboBoxUnidadLeave);
             // 
             // unidadesBindingSource1
             // 
@@ -565,11 +571,50 @@
             // 
             this.ingredientesTableAdapter.ClearBeforeFill = true;
             // 
+            // BtnEditarReceta
+            // 
+            this.BtnEditarReceta.Location = new System.Drawing.Point(359, 424);
+            this.BtnEditarReceta.Name = "BtnEditarReceta";
+            this.BtnEditarReceta.Size = new System.Drawing.Size(75, 23);
+            this.BtnEditarReceta.TabIndex = 21;
+            this.BtnEditarReceta.Text = "Editar";
+            this.BtnEditarReceta.UseVisualStyleBackColor = true;
+            // 
+            // BtnCancelar
+            // 
+            this.BtnCancelar.Location = new System.Drawing.Point(495, 424);
+            this.BtnCancelar.Name = "BtnCancelar";
+            this.BtnCancelar.Size = new System.Drawing.Size(75, 23);
+            this.BtnCancelar.TabIndex = 22;
+            this.BtnCancelar.Text = "Cancelar";
+            this.BtnCancelar.UseVisualStyleBackColor = true;
+            // 
+            // textBox1
+            // 
+            this.textBox1.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.textBox1.Location = new System.Drawing.Point(175, 351);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.TabIndex = 25;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(24, 258);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(35, 13);
+            this.label9.TabIndex = 26;
+            this.label9.Text = "label9";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(938, 513);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.BtnCancelar);
+            this.Controls.Add(this.BtnEditarReceta);
             this.Controls.Add(this.tieneDataGridView);
             this.Controls.Add(this.BtnAgregarNuevoIngrediente);
             this.Controls.Add(this.CmbBoxNuevaUnidad);
@@ -678,6 +723,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn imagePathDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn origenIDDataGridViewTextBoxColumn;
         private System.Windows.Forms.BindingSource recetasBindingSource2;
+        private System.Windows.Forms.Button BtnEditarReceta;
+        private System.Windows.Forms.Button BtnCancelar;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label9;
     }
 }
 
